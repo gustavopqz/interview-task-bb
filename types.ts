@@ -1,5 +1,5 @@
 export interface VideoProgressEvent {
-    userId?: string;
+    userId?: number;
 
     mediaClipId: string;
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { GetPost } from '../models/get-post.model';
-import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,39 +9,32 @@ export class Videoplayer {
 
   constructor(private http: HttpClient){}
 
-  getVideo(userId: string) {
+  getVideo(videoIdToFind: number): Observable<string | null> {
+    return this.http.get('assets/mapping.csv', { responseType: 'text' }).pipe(
+      map((csvText) => {
+        const mapping: Record<string, string> = {};
 
-    // Using AI to read CSV
-    this.http.get('assets/mapping.csv', { responseType: 'text' })
-    .subscribe(csvText => {
+        const rows = csvText
+          .split(/\r?\n/)
+          .map((row) => row.trim())
+          .filter((row) => row.length > 0);
 
-      const mapping: Record<string, string> = {};
+        rows.forEach((row) => {
+          const [postIdRaw, mediaClipRaw] = row.split(',');
 
-      const rows = csvText
-        .split(/\r?\n/)
-        .map(row => row.trim())
-        .filter(row => row.length > 0);
+          if (!postIdRaw || !mediaClipRaw) {
+            return;
+          }
 
-      rows.forEach(row => {
-        const [postIdRaw, mediaClipRaw] = row.split(',');
+          const postId = postIdRaw.trim();
+          const mediaClipId = mediaClipRaw.replace(/"/g, '').trim();
 
-        if (!postIdRaw || !mediaClipRaw) {
-          return;
-        }
+          mapping[postId] = mediaClipId;
+        });
 
-        const postId = postIdRaw.trim();
-        const mediaClipId = mediaClipRaw.replace(/"/g, '').trim();
-
-        mapping[postId] = mediaClipId;
-      });
-
-      // ✅ GET VIDEO BY POST ID
-      const postIdToFind = '76';
-      const videoId = mapping[postIdToFind];
-
-      console.log('Video ID for post', postIdToFind, ':', videoId);
-    });
-
+        return mapping[String(videoIdToFind)] ?? null;
+      })
+    );
   }
   
 }
