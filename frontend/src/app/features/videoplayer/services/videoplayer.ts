@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
+import { GetPost } from '../models/get-post.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,5 +37,14 @@ export class Videoplayer {
       })
     );
   }
+
+  getPost(userId: string): Observable<GetPost> {
+    return of({
+      userId: 1,
+      id: 1,
+      title: 'test',
+      body: 'testbody'
+    });
+  };
   
 }
