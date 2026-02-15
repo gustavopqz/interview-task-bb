@@ -12,4 +12,3 @@
 - IT-XXX (type) - message
   - IT means Interview Task (name of the project)
   - XXX - Number of the scrum card
-
