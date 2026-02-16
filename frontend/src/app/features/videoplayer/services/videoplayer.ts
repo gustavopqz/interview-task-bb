@@ -42,5 +42,19 @@ export class VideoplayerService {
   getPost(userId: string): Observable<GetPost> {
     return this.http.get<GetPost>(`${environment.apiUrl}/posts/${userId}`);
   };
+
+  send40percent(): Observable<unknown> {
+    return this.http.patch(`${environment.apiUrl}/users/1`, {
+      watched: 40,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  send100percent(): Observable<unknown> {
+    return this.http.patch(`${environment.apiUrl}/users/1`, {
+      watched: 100,
+      timestamp: new Date().toISOString()
+    });
+  }
   
 }

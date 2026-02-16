@@ -18,6 +18,7 @@ export class VideoplayerComponent implements OnInit {
   public post: GetPost | null = null;
   public overrides: string = JSON.stringify({ autoPlay: false });
   private hasLogged40Percent: boolean = false;
+  private hasLogged100Percent: boolean = false;
 
   constructor(
     private videoplayerService: VideoplayerService,
@@ -75,12 +76,19 @@ export class VideoplayerComponent implements OnInit {
       if (!this.hasLogged40Percent && progress >= 0.4) {
         this.hasLogged40Percent = true;
         console.log('Watched 40%');
+        this.videoplayerService.send40percent().subscribe();
       }
     });
 
     // Track completion
     api.on('ended', () => {
+      if (this.hasLogged100Percent) {
+        return;
+      }
+
+      this.hasLogged100Percent = true;
       console.log('Video completed');
+      this.videoplayerService.send100percent().subscribe();
     });
   }
 }
