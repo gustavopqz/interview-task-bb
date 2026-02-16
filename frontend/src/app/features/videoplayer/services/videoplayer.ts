@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { GetPost } from '../models/get-post.model';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Videoplayer {
+export class VideoplayerService {
 
   constructor(private http: HttpClient){}
 
@@ -39,12 +40,7 @@ export class Videoplayer {
   }
 
   getPost(userId: string): Observable<GetPost> {
-    return of({
-      userId: 1,
-      id: 1,
-      title: 'test',
-      body: 'testbody'
-    });
+    return this.http.get<GetPost>(`${environment.apiUrl}/posts/${userId}`);
   };
   
 }
